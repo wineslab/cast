@@ -1,0 +1,26 @@
+### OSX ###
+.DS_Store
+
+### FILES ###
+
+# Waveform files generated
+*.WAVEFORM
+
+# Gnuradio iq files
+*.iq
+
+# MATLAB files
+*.asv
+*.mat
+*.fig
+
+# Dev
+__pycache__/
+.idea/
+
+# Images
+*.png
+
+# Batch files results
+*.drc
+*.pcap
