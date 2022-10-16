@@ -1,0 +1,20 @@
+[2022-10-01 14:50:11] Exception __main__channel-estimate: not enough values to unpack (expected 3, got 2)
+[2022-10-01 18:04:29] Exception __main__channel-estimate: only size-1 arrays can be converted to Python scalars
+[2022-10-01 18:12:36] Exception __main__channel-estimate: only size-1 arrays can be converted to Python scalars
+[2022-10-01 18:16:25] Exception __main__channel-estimate: only size-1 arrays can be converted to Python scalars
+[2022-10-01 18:17:13] Exception __main__channel-estimate: all the input array dimensions for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 0 and the array at index 1 has size 1273
+[2022-10-02 16:45:10] Exception __main__channel-estimate: all the input array dimensions for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 0 and the array at index 1 has size 1273
+[2022-10-02 16:47:50] Exception __main__channel-estimate: all the input array dimensions for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 0 and the array at index 1 has size 1273
+[2022-10-02 20:01:22] Exception __main__channel-estimate: iterable expected, not numpy.float64
+[2022-10-02 23:31:17] Exception __main__channel-estimate: can't multiply sequence by non-int of type 'float'
+[2022-10-03 00:45:52] Exception __main__channel-estimate: shape mismatch: objects cannot be broadcast to a single shape.  Mismatch is between arg 0 with shape (93,) and arg 1 with shape (6,).
+[2022-10-03 00:51:40] Exception __main__channel-estimate: local variable 'x_3dpdp' referenced before assignment
+[2022-10-03 00:54:08] Exception __main__channel-estimate: shape mismatch: objects cannot be broadcast to a single shape.  Mismatch is between arg 0 with shape (6,) and arg 1 with shape (270,).
+[2022-10-03 01:00:18] Exception __main__channel-estimate: shape mismatch: objects cannot be broadcast to a single shape.  Mismatch is between arg 0 with shape (6,) and arg 1 with shape (270,).
+[2022-10-03 18:12:41] Exception __main__channel-estimate: not enough values to unpack (expected 6, got 5)
+[2022-10-03 18:26:20] Exception __main__channel-estimate: tuple index out of range
+[2022-10-03 23:14:11] Exception __main__channel-estimate: iterable expected, not numpy.float64
+[2022-10-03 23:22:11] Exception __main__channel-estimate: iterable expected, not numpy.float64
+[2022-10-03 23:23:36] Exception __main__channel-estimate: iterable expected, not numpy.float64
+[2022-10-03 23:26:10] Exception __main__channel-estimate: iterable expected, not numpy.float64
+[2022-10-03 23:27:33] Exception __main__channel-estimate: iterable expected, not numpy.float64
