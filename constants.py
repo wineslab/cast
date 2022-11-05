@@ -9,8 +9,8 @@ Global constants file that is used to store all constants
 
 """ Parameters """
 CODE_SEQUENCE = 1               # Code sequence used - 1: ga128; 2: glfsr; 3: ls1, 4:ls1all, 5:gold
-SCENARIO_ID = '90001'            # Scenario id of the experiment
-RX_FILE_ID = '10M_1_2'              # RX filename id
+SCENARIO_ID = '90001'           # Scenario id of the experiment
+RX_FILE_ID = '10M_1_2'          # RX filename id
 
 SAMPLE_RATE = 10                # Sampling rate [MS/s]
 GAIN_USRP_TX = 15               # Gain of transmitter USRP [dB]
@@ -34,7 +34,7 @@ PDP2PLOT_WINDOW = [-30, 240]    # Window to plot for 3d surface of pdp starting 
 """ Filenames """
 PATH_ROOT_LOCAL = ''
 PATH_FOLDER_LOCAL = PATH_ROOT_LOCAL + ''
-PATH_LOG_LOCAL = PATH_FOLDER_LOCAL
+PATH_LOG_LOCAL = PATH_FOLDER_LOCAL + 'logs/'
 PATH_ROOT = '/root/'
 PATH_FOLDER = PATH_ROOT + 'radio_api/'
 PATH_LOG = '/logs/'
@@ -45,6 +45,7 @@ FILENAME_CODE_TX = ['ga128_bpsk', 'glfsr_bpsk', 'ls1_bpsk', 'ls1all_bpsk', 'gold
 FILENAME_CODE_RX = ['ga128_bpsk_sps4_rrc_usrpSource', 'glfsr_bpsk_rx', 'ls1_bpsk_rx', 'ls1all_bpsk_rx']
 FILENAME_IQ_TX = PATH_CS + FILENAME_CODE_TX[CODE_SEQUENCE] + '.csv'
 FILENAME_IQ_RX = PATH_IQ + FILENAME_CODE_RX[CODE_SEQUENCE] + FILENAME_IQ_END + '.iq'
+FILENAME_IQ_RX_DEFAULT = 'file_sink_0.iq'
 FILENAME_PATH_DATA = PATH_LOG_LOCAL + 'path_data_'
 FILENAME_LOG = PATH_LOG_LOCAL + 'run.log'
 FILENAME_LOG_ERROR = PATH_LOG_LOCAL + 'error.log'

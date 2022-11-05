@@ -1,0 +1,7 @@
+{
+  "Node 1":{"SRN":1,"RadioA":1,"RadioB":2},
+  "Node 2":{"SRN":3,"RadioA":1,"RadioB":2},
+  "Node 3":"None",
+  "Node 4":"None",
+  "Node 5":"None"
+}

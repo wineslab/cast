@@ -295,8 +295,13 @@ def main():
     # Load csv Tx data
     iq_tx = load_csv_trace(const.FILENAME_IQ_TX)
 
+    # Create rx filename
+    if sys.argv[1] == 0:    # Default rx file from bash interactive script
+        filename = const.FILENAME_IQ_RX_DEFAULT
+    else:                   # Rx file from manual sounding
+        filename = const.FILENAME_IQ_RX
+
     # All main operations
-    filename = const.FILENAME_IQ_RX                         # Create rx filename
     if os.path.isfile(filename):                            # Check if rx filename exists
         iq_rx_usrp_data = load_gnuradio_trace(filename)     # Load rx data
         all_1res_paths, all_paths, all_cirs, all_pdps, start_frame, period = \
