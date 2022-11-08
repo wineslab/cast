@@ -8,8 +8,8 @@ Global constants file that is used to store all constants
 """
 
 """ Parameters """
-CODE_SEQUENCE = 1               # Code sequence used - 1: ga128; 2: glfsr; 3: ls1, 4:ls1all, 5:gold
-SCENARIO_ID = '90001'           # Scenario id of the experiment
+CODE_SEQUENCE = 1               # Code sequence used - 0: ga128; 1: glfsr; 2: ls1, 3:ls1all, 4:gold
+SCENARIO_ID = '1009'            # Scenario id of the experiment
 RX_FILE_ID = '10M_1_2'          # RX filename id
 
 SAMPLE_RATE = 10                # Sampling rate [MS/s]
@@ -51,13 +51,14 @@ FILENAME_TX = PATH_FOLDER + 'tx.py'
 FILENAME_RX = PATH_FOLDER + 'rx.py'
 FILENAME_CHANNEL_EST = PATH_FOLDER + 'channel-estimate.py'
 
-PATH_RESULTS = '../results/'
+FOLDERNAME_RESULTS = 'results'
+PATH_RESULTS = PATH_ROOT + FOLDERNAME_RESULTS + '/'
 FILENAME_PATH_CSV = PATH_RESULTS + 'path_info.csv'
-FILENAME_SEEK_START_FRAME = PATH_RESULTS + 'seek_start_frame_' + SCENARIO_ID + '_' + RX_FILE_ID + '.pdf'
-FILENAME_SINGLE_FRAME = PATH_RESULTS + 'single_frame_' + SCENARIO_ID + '_' + RX_FILE_ID + '.pdf'
-FILENAME_ALL_1_RES_PATHS_RESULTS = PATH_RESULTS + 'all_1res_paths_' + SCENARIO_ID + '_' + RX_FILE_ID + '.pdf'
-FILENAME_ALL_PATHS_RESULTS = PATH_RESULTS + 'all_paths_' + SCENARIO_ID + '_' + RX_FILE_ID + '.pdf'
-FILENAME_3DPDP_RESULTS = PATH_RESULTS + '3dpdp_' + SCENARIO_ID + '_' + RX_FILE_ID + '.pdf'
+FILENAME_SEEK_START_FRAME = PATH_RESULTS + 'seek_start_frame.pdf'
+FILENAME_SINGLE_FRAME = PATH_RESULTS + 'single_frame.pdf'
+FILENAME_ALL_1_RES_PATHS_RESULTS = PATH_RESULTS + 'all_1res_paths.pdf'
+FILENAME_ALL_PATHS_RESULTS = PATH_RESULTS + 'all_paths.pdf'
+FILENAME_3DPDP_RESULTS = PATH_RESULTS + '3dpdp.pdf'
 PATH_RAW_DATA = PATH_RESULTS + 'raw_data/'
 FILENAME_ALL_1_RES_PATHS_RAW = PATH_RAW_DATA + 'all_1res_paths.csv'
 FILENAME_ALL_PATHS_RAW = PATH_RAW_DATA + 'all_paths.csv'

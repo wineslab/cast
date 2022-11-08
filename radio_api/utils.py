@@ -31,6 +31,7 @@ def load_gnuradio_trace(filename):
     iq = i + 1j*q                       # complex iq values
     # iq = iq.tolist()
     t = list(range(0, len(iq)))         # time vector
+    write_log("Loaded rx data")
 
     return iq
 
@@ -45,6 +46,7 @@ def load_csv_trace(filename):
     except Exception as e:
         write_log_error(e, "load_csv_trace")
         return []
+    write_log("Loaded csv tx data")
 
     return data
 

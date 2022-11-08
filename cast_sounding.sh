@@ -111,7 +111,10 @@ done
 ## Get scenario offset [TO-DO]
 
 
-## Print configuration values
+## Print configuration values [TO-DO]
+
+
+## Export configuration values [TO-DO]
 
 
 echo 'Sounding configuration completed.'
@@ -164,7 +167,7 @@ colosseumcli rf start "$SCENARIO_ID" -c -m radio_api/radio_map.json
 
 ## Wait to sync for scenario time
 echo 'Waiting to sync.'
-sleep 12
+sleep 11
 
 
 ## Start rx
@@ -179,6 +182,6 @@ echo 'Starting rx.'
 echo 'Performing sounding operations.'
 # Calling parameters: ./channel-estimate.py 0
 # If the first argument is 0, it will take the default rx file from this interactive sounding
-./radio_api/channel-estimate.py 0
+./radio_api/channel-estimate.py 0 "$SCENARIO_ID" "$SOUNDING_LINK"
 
 echo 'CaST sounding completed.'

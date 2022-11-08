@@ -63,9 +63,11 @@ def get_rx_start_period(tx, rx):
         start_frame = start_frame_tmp - (backing_idx * period)      # Actual start by going backwards
 
         # Return start frame and period correctly
+        write_log("Found start frame and period correctly")
         return start_frame, period
 
     # No start frame found
+    write_log("No start frame found")
     return -1, 0
 
 
@@ -93,10 +95,10 @@ def pathloss_estimate(tx, rx):
     corrI = corrI**2
     corrQ = corrQ**2
     corrIQ = np.array([x + y for x, y in zip(corrI, corrQ)])
-    cir = np.sqrt(corrIQ)                # Channel Impulse Response
+    cir = np.sqrt(corrIQ)                               # Channel Impulse Response
 
     pdpIQ = abs(cir)
-    pdp = 20 * np.log10(pdpIQ)                          # Power Delay Profile
+    pdp = 20 * np.log10(pdpIQ, where=pdpIQ > 0)         # Power Delay Profile
 
     return pathloss, cir, pdp
 
@@ -136,6 +138,7 @@ def compute_complete_estimate_start(tx, rx):
     all_paths = np.array(all_paths)
     all_cirs = np.array(all_cirs)
     all_pdps = np.array(all_pdps)
+    write_log("Finished all channel estimation computations")
 
     return all_1res_paths, all_paths, all_cirs, all_pdps, start_frame, period
 
@@ -148,6 +151,20 @@ def create_results_dir():
     # Check if directories exist
     if not os.path.exists(const.PATH_RESULTS + const.PATH_RAW_DATA):
         os.makedirs(const.PATH_RESULTS + const.PATH_RAW_DATA)
+
+
+def rename_results_dir():
+    """
+    Rename results directory and its sub-directories to make it unique if bash interactive reservation
+    The format will be: results_{SCENARIO_ID}_{SOUNDING_LINK}_{TIMESTAMP}/
+    """
+
+    # Check if directory exists
+    if os.path.exists(const.PATH_RESULTS) and sys.argv[1] == "0":
+        unique_time = datetime.now().strftime('%Y_%m_%d-%H_%M')                                 # Get unique timestamp
+        results_name = const.PATH_RESULTS[:-1] + "_" + sys.argv[2] + "_" + sys.argv[3] + unique_time   # Build name
+        os.rename(const.PATH_RESULTS[:-1], results_name)                                               # Rename
+        write_log("Renamed results directory in " + results_name)
 
 
 def write_data(all_1res_paths):
@@ -177,7 +194,7 @@ def write_data(all_1res_paths):
         csvwriter.writerow(path_fields)                             # Writing the fields
         csvwriter.writerows(path_data)                              # Writing the data
 
-    write_log("Path data has been written successfully in: " + path_csv_filename)
+    write_log("Written path data successfully in: " + path_csv_filename)
 
 
 def plot_data(all_1res_paths, all_paths, all_cirs, all_pdps, start_frame, period):
@@ -261,7 +278,7 @@ def plot_data(all_1res_paths, all_paths, all_cirs, all_pdps, start_frame, period
         plt.savefig(const.FILENAME_3DPDP_RESULTS)
         # plt.show()
 
-    write_log("Plot has been saved successfully in: " + const.PATH_RESULTS)
+    write_log("Saved plots successfully in: " + const.PATH_RESULTS)
 
 
 def export_data(all_1res_paths, all_paths, all_cirs, all_pdps, start_frame, period):
@@ -284,7 +301,7 @@ def export_data(all_1res_paths, all_paths, all_cirs, all_pdps, start_frame, peri
         csvwriter.writerow(path_fields)                         # Writing the fields
         csvwriter.writerows(path_data)                          # Writing the data
 
-    write_log("Data has been written successfully in: " + path_csv_filename)
+    write_log("Written data successfully in: " + path_csv_filename)
 
 
 def main():
@@ -324,6 +341,9 @@ def main():
         # Plot and print final data
         if const.EXPORT_DATA:
             export_data(all_1res_paths, all_paths, all_cirs, all_pdps, start_frame, period)
+
+        # Rename results directory
+        rename_results_dir()
 
     else:   # RX filename not found
         write_log_error('', "RX filename not found")
