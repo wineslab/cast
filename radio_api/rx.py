@@ -32,7 +32,7 @@ class rx(gr.top_block):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 50e6
+        self.samp_rate = samp_rate = 10e6
         self.num_disp_points = num_disp_points = 2048
         self.freq = freq = float(sys.argv[2])
 
@@ -54,7 +54,7 @@ class rx(gr.top_block):
         self.uhd_usrp_source_0.set_antenna('RX2', 0)
         self.uhd_usrp_source_0.set_samp_rate(samp_rate)
         self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec())
-        self.blocks_file_sink_0_0 = blocks.file_sink(gr.sizeof_gr_complex*1, 'file_sink_' + str(sys.argv[4]) + '.iq', False)
+        self.blocks_file_sink_0_0 = blocks.file_sink(gr.sizeof_gr_complex*1, '/root/radio_api/file_sink_' + str(sys.argv[4]) + '.iq', False)
         self.blocks_file_sink_0_0.set_unbuffered(False)
 
         ##################################################
@@ -112,7 +112,7 @@ if __name__ == '__main__':
     tb.start()
     # tb.show()
     # The flowgraph is now running independently
-    if sys.argv[1] == 0:    # Interactive reservation
+    if sys.argv[1] == "0":    # Interactive reservation
         try:
             input('Press Enter to quit: ')
         except EOFError:

@@ -20,7 +20,7 @@ MESSAGE=""
 
 # check to see if our state file even exists
 if [ -e /tmp/LTE_STATE ]; then
-    STATE=`cat /tmp/LTE_STATE`
+    STATE=$(cat /tmp/LTE_STATE)
 
     if [ -z "$STATE" ]; then
         STATE="ERROR"
@@ -35,7 +35,7 @@ fi
 OUTPUT="{\"STATUS\":\"$STATE\",\"INFO\":\"$MESSAGE\"}"
 
 #print to STDOUT
-echo $OUTPUT
+echo "$OUTPUT"
 
 #exit good
 exit 0

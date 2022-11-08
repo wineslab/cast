@@ -11,21 +11,21 @@
 
 # Check if there is an input argument for radio configuration
 case $# in
-     0)   #zero inputs
-          echo "[`date`] Starting start.sh" >> /logs/run.log
-          echo "[`date`] Setting UHD_RFNOC_DIR environment variable" >> /logs/run.log
+     0)   # Zero inputs
+          echo "[`date`] Starting start.sh" >> ../logs/run.log
+          echo "[`date`] Setting UHD_RFNOC_DIR environment variable" >> ../logs/run.log
           export UHD_RFNOC_DIR=/usr/share/uhd/3.15.0/rfnoc/
-          echo "[`date`] Flashing fpga" >> /logs/run.log
-          /root/flash_fpga_x310.sh    # flash fpga
+          echo "[`date`] Flashing fpga" >> ../logs/run.log
+          ./flash_fpga_x310.sh    # Flash fpga
           # apt install gnuradio gir1.2-gtk-3.0     # install gnuradio
-          echo "[`date`] Starting start.py" >> /logs/run.log
-          python3 /root/radio_api/start.py
-          echo "[`date`] Exiting start.sh successfully" >> /logs/run.log
-          exit 0                # Exit successfully
+          echo "[`date`] Starting start.py" >> ../logs/run.log
+          python3 ./start.py
+          echo "[`date`] Exiting start.sh successfully" >> ../logs/run.log
+          exit 0                  # Exit successfully
           ;;
 
      *)   # More than zero input argument
-          echo "Exiting start.sh with an error" >> /logs/run.log
-          exit 64               # Exit with an error
+          echo "Exiting start.sh with an error" >> ../logs/run.log
+          exit 64                 # Exit with an error
           ;;
 esac

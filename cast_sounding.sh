@@ -13,7 +13,7 @@ echo "Starting CaST sounding..."
 
 ## Get scenario ID
 while true; do
-  read -p "What is the scenario ID to sound? " -r
+  read -p "What is the scenario ID to sound?: " -r
 
   if [[ $REPLY =~ ^([0-9]{4,5})$ ]]   # Scenario id valid
   then
@@ -27,7 +27,7 @@ done
 
 ## Get scenario frequency
 while true; do
-  read -p "What is the scenario frequency in Hz to sound? " -r
+  read -p "What is the scenario frequency in Hz to sound?: " -r
 
   if [[ $REPLY =~ ^([1-9][0-9]{6,9})$ ]]   # Scenario id valid
   then
@@ -41,7 +41,7 @@ done
 
 ## Get total number of scenario nodes
 while true; do
-  read -p "What is the total number of nodes in the scenario? " -r
+  read -p "What is the total number of nodes in the scenario?: " -r
 
   if [[ $REPLY =~ ^([1-9][0-9]{0,1})$ ]]   # Scenario nodes number valid [1-99]
   then
@@ -53,25 +53,25 @@ while true; do
 done
 
 ## Get Rx node id
-RX_ID=$(ifconfig col0 | grep -Eo '(172.30.101.[0-9]+)' | awk '{print substr($1,length($1)-2) }')
+RX_ID=$(ifconfig col0 | grep -Eo '(172.30.[0-9]+.[0-9]+)' | awk -v s=100 '{print substr($1,length($1)-2)-s }')
 printf 'The current node will be used as Rx: %d\n' "$RX_ID"
 
 ## Get Tx node id
 while true; do
-  read -p "What is the node ID of the reservation acting as the tx? (e.g. 003): " -r
+  read -p "What is the node ID of the reservation acting as the tx (e.g. 3)?: " -r
 
-  if [[ $REPLY =~ ^([0-9]{3})$ ]]   # Tx node id valid
+  if [[ $REPLY =~ ^([1-9][0-9]{0,2})$ ]]   # Tx node id valid
   then
     TX_ID=$REPLY
     break
   fi
 
-  echo 'Tx ID not valid. It must contain 3 digits (add any 0 before if needed, e.g. 012).'
+  echo 'Tx ID not valid. It must contain 3 digits (e.g. 12).'
 done
 
 ## Ensure the tx node is running
 while true; do
-  read -p "Is the tx node running with the same frequency (y/n)? " -r
+  read -p "Is the tx node running with the same frequency (y/n)?: " -r
 
   if [[ $REPLY =~ ^(y|Y)(es)?$ ]]   # Y y Yes yes
   then
@@ -83,7 +83,7 @@ done
 
 ## Get sounding duration
 while true; do
-  read -p "What is the sounding duration in seconds? " -r
+  read -p "What is the desired sounding duration in seconds?: " -r
 
   if [[ $REPLY =~ ^([1-9][0-9]{0,2})$ ]]   # Sounding duration should be between [1-999]
   then
@@ -96,7 +96,7 @@ done
 
 ## Get sounding link
 while true; do
-  read -p "What is the link tx-rx to sound (e.g. 1-2)? " -r
+  read -p "What is the link tx-rx to sound (e.g. 1-2)?: " -r
 
   if [[ $REPLY =~ ^([1-9]{1,2}-[0-9]{1,2})$ ]]   # Sounding link [1-2]
   then
@@ -128,12 +128,13 @@ viv_jtag_program /usr/share/uhd/images/usrp_x310_fpga_HG.bit
 
 ## Set scenario radio map
 
+echo 'Setting scenario radio map.'
 # Remove extra 0s before number
 TX_ID_SCEN=$(echo "$TX_ID" | awk '{print $1 + 0}' )
 RX_ID_SCEN=$(echo "$RX_ID" | awk '{print $1 + 0}' )
 
 # Remove previous radio map file
-rm -f radio_map.json
+rm -f radio_api/radio_map.json
 
 # Define empty json variable
 SCEN_JSON='{}'
@@ -148,30 +149,36 @@ SCEN_JSON="$(echo "$SCEN_JSON" | jq '. + {"Node '"$SOUNDING_TX_ID"'":{"SRN":'"$T
 SCEN_JSON="$(echo "$SCEN_JSON" | jq '. + {"Node '"$SOUNDING_RX_ID"'":{"SRN":'"$RX_ID_SCEN"',"RadioA":1,"RadioB":2}}')"
 
 # Export variable into a json file
-echo "$SCEN_JSON" >> radio_map.json
+echo "$SCEN_JSON" >> radio_api/radio_map.json
 
 
 ## Stop possible running scenario
+echo 'Stopping previous running scenario.'
 colosseumcli rf stop
 
 
 ## Start scenario
-printf 'Starting scenario %d\n' "$SCENARIO_ID"
-colosseumcli rf start "$SCENARIO_ID" -c -m radio_map.json
+printf 'Starting scenario %d.\n' "$SCENARIO_ID"
+colosseumcli rf start "$SCENARIO_ID" -c -m radio_api/radio_map.json
 
 
 ## Wait to sync for scenario time
-sleep 8
+echo 'Waiting to sync.'
+sleep 12
 
 
 ## Start rx
 
+echo 'Starting rx.'
 # Calling parameters: ./rx.py tx_time frequency gain file_sink_ext
-./rx.py "$SOUNDING_DURATION" "$SCENARIO_FREQ" 15 0
+./radio_api/rx.py "$SOUNDING_DURATION" "$SCENARIO_FREQ" 15 0
 
 
-## Perform sounding computations
+## Perform sounding operations
 
+echo 'Performing sounding operations.'
 # Calling parameters: ./channel-estimate.py 0
 # If the first argument is 0, it will take the default rx file from this interactive sounding
-./channel-estimate.py 0
+./radio_api/channel-estimate.py 0
+
+echo 'CaST sounding completed.'

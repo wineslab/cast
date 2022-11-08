@@ -14,7 +14,7 @@ echo "Starting transmitter CaST sounding..."
 
 ## Get scenario frequency
 while true; do
-  read -p "What is the scenario frequency in Hz to sound (should be the same as the rx node)? " -r
+  read -p "What is the scenario frequency in Hz to sound (should be the same as the rx node)?: " -r
 
   if [[ $REPLY =~ ^([1-9][0-9]{6,9})$ ]]   # Scenario id valid
   then
@@ -28,6 +28,14 @@ done
 
 ### Start tx node
 
+## Flash fpga
+echo 'Flashing FPGA.'
+source /opt/fpga/usrp3/top/x300/setupenv.sh
+viv_jtag_program /usr/share/uhd/images/usrp_x310_fpga_HG.bit
+
+
+## Start tx
+
 # Calling parameters: ./tx.py tx_time frequency gain
 # If the tx_time is 0, it will run indefinitely
-./tx.py 0 "$SCENARIO_FREQ" 15
+./radio_api/tx.py 0 "$SCENARIO_FREQ" 15

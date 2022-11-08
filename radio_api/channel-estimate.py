@@ -26,7 +26,7 @@ def get_rx_start_period(tx, rx):
 
     # Get window and seek for start frame cycle point
     for i in range(const.CORR_RX_TRIALS):
-        print("Trial:" + str(i))
+        # print("Trial:" + str(i))
         tmp_start = const.CORR_RX_START + const.CORR_RX_START*i
         tmp_end = const.CORR_RX_END + const.CORR_RX_END*i
         if tmp_start > rx.size:             # Check for limits (should not happen)
@@ -42,7 +42,7 @@ def get_rx_start_period(tx, rx):
         max_corr_idx = abs_corr.argmax()
         max_abs_corr = abs_corr[max_corr_idx]
         if max_abs_corr < const.CORR_TH_START:          # Rx signal did not correlate well with the tx
-            print("Max abs corr:" + str(max_abs_corr))
+            # print("Max abs corr:" + str(max_abs_corr))
             continue
 
         if const.PLOT_START:
@@ -296,7 +296,7 @@ def main():
     iq_tx = load_csv_trace(const.FILENAME_IQ_TX)
 
     # Create rx filename
-    if sys.argv[1] == 0:    # Default rx file from bash interactive script
+    if sys.argv[1] == "0":  # Default rx file from bash interactive script
         filename = const.FILENAME_IQ_RX_DEFAULT
     else:                   # Rx file from manual sounding
         filename = const.FILENAME_IQ_RX
