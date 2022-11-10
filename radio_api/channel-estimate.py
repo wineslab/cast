@@ -110,10 +110,10 @@ def compute_complete_estimate_start(tx, rx):
 
     start_frame, period = get_rx_start_period(tx, rx)
 
-    if start_frame == -1:           # no correlation between the current tx-rx
-        return -1, np.array([])
+    if start_frame == -1:           # No correlation between the current tx-rx
+        return np.array([]), -1, -1, -1, -1, -1
 
-    n_sig = math.floor(((rx.size-start_frame)//period)) - 2   # sequences to cycle without last and 1 for error
+    n_sig = math.floor(((rx.size-start_frame)//period)) - 2   # Sequences to cycle without last and 1 for error
 
     # Define data structures
     all_1res_paths = []     # All pathlosses for current tx-rx transmission
@@ -149,8 +149,8 @@ def create_results_dir():
     """
 
     # Check if directories exist
-    if not os.path.exists(const.PATH_RESULTS + const.PATH_RAW_DATA):
-        os.makedirs(const.PATH_RESULTS + const.PATH_RAW_DATA)
+    if not os.path.exists(const.PATH_RAW_DATA):
+        os.makedirs(const.PATH_RAW_DATA)
 
 
 def rename_results_dir():

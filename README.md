@@ -3,6 +3,16 @@ This repository contains the code for the paper D. Villa, M. Tehrani-Moayyed, P.
 
 This work was partially supported by the U.S. National Science Foundation under grant CNS-1925601, and U.S. Department of Transportation, Federal Highway Administration under grant 693JJ321C000009.
 
+# How to use it
+
+The channel sounding code of CaST has been adjusted to work on the Colosseum testbed. Colosseum users can make a reservation with the common image "cast" which already contains all latest code ready to run.
+
+To run CaST channel sounding, users can simply exploit the step-by-step interactive bash script that will guide them to input all needed configurations and requirements by executing:
+  ```
+  ./cast_sounding.sh
+  ```
+This script is supposed to be run in the intended receiver node. It is recommended the use of terminal multiplexers like `tmux` or `screen`.
+
 # References
 
 [1] D. Villa, M. Tehrani-Moayyed, P. Johari, S. Basagni, T. Melodia, "CaST: A Toolchain for Creating and Characterizing Realistic Wireless Network Emulation Scenarios", Proc. of the 16th ACM Workshop on Wireless Network Testbeds, Experimental evaluation & CHaracterization (WiNTECH 2022), Sydney, Australia, October 2022.
