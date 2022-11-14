@@ -87,11 +87,11 @@ while true; do
 
   if [[ $REPLY =~ ^([1-9][0-9]{0,2})$ ]]   # Sounding duration should be between [1-999]
   then
-    SOUNDING_DURATION=$REPLY
+    SOUNDING_DURATION=$(echo "$REPLY" | awk '{print $1 + 2}' )
     break
   fi
 
-  echo 'Sounding duration not valid. It must be between [1-999] seconds.'
+  echo 'Sounding duration not valid. It must be between [1-999] seconds. 2 seconds are added for conciseness.'
 done
 
 ## Get sounding link
@@ -153,6 +153,11 @@ SCEN_JSON="$(echo "$SCEN_JSON" | jq '. + {"Node '"$SOUNDING_RX_ID"'":{"SRN":'"$R
 
 # Export variable into a json file
 echo "$SCEN_JSON" >> radio_api/radio_map.json
+
+
+## Create results folder
+echo 'Creating results folder.'
+mkdir -p /root/results/raw_data
 
 
 ## Stop possible running scenario

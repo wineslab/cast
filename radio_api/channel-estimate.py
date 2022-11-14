@@ -149,8 +149,8 @@ def create_results_dir():
     """
 
     # Check if directories exist
-    if not os.path.exists(const.PATH_RAW_DATA):
-        os.makedirs(const.PATH_RAW_DATA)
+    if not os.path.exists(const.PATH_RAW_RESULTS):
+        os.makedirs(const.PATH_RAW_RESULTS)
 
 
 def rename_results_dir():
