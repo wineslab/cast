@@ -31,18 +31,26 @@ EXPORT_DATA = True              # Export final data structures
 PDP2PLOT_OFFSET = 1210          # Offset to plot for 3d surface of pdp
 PDP2PLOT_WINDOW = [-30, 240]    # Window to plot for 3d surface of pdp starting from offset
 
-""" Filenames """
+""" Path names """
 PATH_ROOT = '/root/'
 PATH_FOLDER = PATH_ROOT + 'radio_api/'
 PATH_LOG = PATH_ROOT + 'logs/'
 PATH_IQ = PATH_FOLDER + '../data/' + SCENARIO_ID + '/'
 PATH_CS = PATH_FOLDER + 'code_sequences/'
+FOLDERNAME_RESULTS = 'results'
+PATH_RESULTS = PATH_ROOT + FOLDERNAME_RESULTS + '/'
+PATH_RAW_RESULTS = PATH_RESULTS + 'raw_results/'
+PATH_RAW_DATA = PATH_RESULTS + 'raw_data/'
+
+""" Filenames """
 FILENAME_IQ_END = '_' + SCENARIO_ID + '_' + RX_FILE_ID
 FILENAME_CODE_TX = ['ga128_bpsk', 'glfsr_bpsk', 'ls1_bpsk', 'ls1all_bpsk', 'gold_bpsk']
 FILENAME_CODE_RX = ['ga128_bpsk_sps4_rrc_usrpSource', 'glfsr_bpsk_rx', 'ls1_bpsk_rx', 'ls1all_bpsk_rx']
+FILENAME_IQ_SUFFIX = '.iq'
 FILENAME_IQ_TX = PATH_CS + FILENAME_CODE_TX[CODE_SEQUENCE] + '.csv'
-FILENAME_IQ_RX = PATH_IQ + FILENAME_CODE_RX[CODE_SEQUENCE] + FILENAME_IQ_END + '.iq'
-FILENAME_IQ_RX_DEFAULT = PATH_FOLDER + 'rx_file_sink_0.iq'
+FILENAME_IQ_RX = PATH_IQ + FILENAME_CODE_RX[CODE_SEQUENCE] + FILENAME_IQ_END + FILENAME_IQ_SUFFIX
+FILENAME_IQ_RX_DEFAULT = PATH_RAW_DATA + 'rx_file_sink_0.iq'
+FILENAME_IQ_RX_SPLIT = PATH_RAW_DATA + 'rx_file_sink_part'
 FILENAME_PATH_DATA = PATH_LOG + 'path_data_'
 FILENAME_LOG = PATH_LOG + 'run.log'
 FILENAME_LOG_ERROR = PATH_LOG + 'error.log'
@@ -51,19 +59,17 @@ FILENAME_TX = PATH_FOLDER + 'tx.py'
 FILENAME_RX = PATH_FOLDER + 'rx.py'
 FILENAME_CHANNEL_EST = PATH_FOLDER + 'channel-estimate.py'
 
-FOLDERNAME_RESULTS = 'results'
-PATH_RESULTS = PATH_ROOT + FOLDERNAME_RESULTS + '/'
 FILENAME_PATH_CSV = PATH_RESULTS + 'path_info.csv'
 FILENAME_SEEK_START_FRAME = PATH_RESULTS + 'seek_start_frame.pdf'
 FILENAME_SINGLE_FRAME = PATH_RESULTS + 'single_frame.pdf'
 FILENAME_ALL_1_RES_PATHS_RESULTS = PATH_RESULTS + 'all_1res_paths.pdf'
 FILENAME_ALL_PATHS_RESULTS = PATH_RESULTS + 'all_paths.pdf'
 FILENAME_3DPDP_RESULTS = PATH_RESULTS + '3dpdp.pdf'
-PATH_RAW_RESULTS = PATH_RESULTS + 'raw_results/'
 FILENAME_ALL_1_RES_PATHS_RAW = PATH_RAW_RESULTS + 'all_1res_paths.csv'
 FILENAME_ALL_PATHS_RAW = PATH_RAW_RESULTS + 'all_paths.csv'
 FILENAME_ALL_CIRS_RAW = PATH_RAW_RESULTS + 'all_cirs.csv'
 FILENAME_ALL_PDPS_RAW = PATH_RAW_RESULTS + 'all_pdps.csv'
+FILENAME_ALL_START_FRAME_RAW = PATH_RAW_RESULTS + 'all_start_frame.csv'
 FILENAME_VARIOUS_RAW = PATH_RAW_RESULTS + 'various.csv'
 
 

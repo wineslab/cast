@@ -11,14 +11,39 @@ from matplotlib import cm
 import math
 import sys
 import os
+import glob
 import csv
 
 from utils import *
 
 
-def get_rx_start_period(tx, rx):
+def build_rx_files(orig_rx_file):
+    """
+    Split the rx file if too big in smaller chunks not to go in overflow
+    Return the list of files split to be processed
+    """
+
+    # Check if rx file exists
+    if not os.path.isfile(orig_rx_file):
+        write_log_error('', "Rx file not found")
+        return np.array([])
+
+    # Split the file in smaller chunks with the unix split command
+    os.system("split -d -b 4G " + orig_rx_file + " " + const.FILENAME_IQ_RX_SPLIT +
+              " --additional-suffix=" + const.FILENAME_IQ_SUFFIX)
+
+    # Retrieve list of rx split files created sorted by created time
+    rx_files = sorted(glob.glob(const.FILENAME_IQ_RX_SPLIT + "*"), key=os.path.getmtime)
+
+    # Return rx files split correctly
+    write_log("Split rx files in smaller chunks correctly")
+    return rx_files
+
+
+def get_rx_start_period(tx, rx, rxi):
     """
     Get start frame index and period of the receiving signal data
+    If not the first run, retrieve the start from the previous one
     """
 
     # Get period of the signal from the tx length
@@ -67,8 +92,8 @@ def get_rx_start_period(tx, rx):
         return start_frame, period
 
     # No start frame found
-    write_log("No start frame found")
-    return -1, 0
+    write_log("Start frame not found")
+    return -1, -1
 
 
 def pathloss_estimate(tx, rx):
@@ -103,44 +128,62 @@ def pathloss_estimate(tx, rx):
     return pathloss, cir, pdp
 
 
-def compute_complete_estimate_start(tx, rx):
+def compute_complete_estimate_start(tx, rx_files):
     """
     Compute pathloss channel estimation of the whole signal received through start frame and period method
     """
-
-    start_frame, period = get_rx_start_period(tx, rx)
-
-    if start_frame == -1:           # No correlation between the current tx-rx
-        return np.array([]), -1, -1, -1, -1, -1
-
-    n_sig = math.floor(((rx.size-start_frame)//period)) - 2   # Sequences to cycle without last and 1 for error
 
     # Define data structures
     all_1res_paths = []     # All pathlosses for current tx-rx transmission
     all_paths = []          # All pathlosses with resolution for current tx-rx transmission
     all_cirs = []           # All cirs with resolution for current tx-rx transmission
     all_pdps = []           # All pdps with resolution for current tx-rx transmission
+    all_start_frame = []    # All start of the rx frames
+    period = -1             # Period of the tx
 
-    # Channel estimation computation cycle
-    for i in range(n_sig):
-        rx_tmp = rx[start_frame + (period * (i-2)) + 1:start_frame + (period * (i + 2))]  # Frame rx (1 behind; 2 after)
-        path_tmp, cir_tmp, pdp_tmp = pathloss_estimate(tx, rx_tmp)                  # Make computations
+    for rxi in range(len(rx_files)):
 
-        # Save data
-        all_1res_paths.append(path_tmp - const.GAIN_USRP_TX - const.GAIN_USRP_RX)   # Remove USRP gains
-        if i % const.RES_SAVE == 0:     # Save data with selected resolution
-            all_paths.append(path_tmp - const.GAIN_USRP_TX - const.GAIN_USRP_RX)    # Remove USRP gains
-            all_cirs.append(cir_tmp)
-            all_pdps.append(pdp_tmp - const.GAIN_USRP_TX - const.GAIN_USRP_RX)      # Remove USRP gains
+        filename = rx_files[rxi]        # Get current rx filename to compute
+
+        if os.path.isfile(filename):    # Check if rx filename exists
+            rx = load_gnuradio_trace(filename)  # Load rx data
+
+            start_frame, period = get_rx_start_period(tx, rx, rxi)  # Get start_frame and period
+            all_start_frame.append(start_frame)                     # Store start_frame
+
+            if start_frame == -1:  # No correlation between the current tx-rx
+                write_log("No correlation between the current tx and rx")
+                continue
+
+            n_sig = math.floor(
+                ((rx.size - start_frame) // period)) - 2  # Sequences to cycle without last and 1 for error
+
+            # Channel estimation computation cycle
+            for i in range(n_sig):
+                rx_tmp = rx[start_frame + (period * (i - 2)) + 1:start_frame + (
+                            period * (i + 2))]  # Frame rx (1 behind; 2 after)
+                path_tmp, cir_tmp, pdp_tmp = pathloss_estimate(tx, rx_tmp)  # Make computations
+
+                # Save data
+                all_1res_paths.append(path_tmp - const.GAIN_USRP_TX - const.GAIN_USRP_RX)  # Remove USRP gains
+                if i % const.RES_SAVE == 0:  # Save data with selected resolution
+                    all_paths.append(path_tmp - const.GAIN_USRP_TX - const.GAIN_USRP_RX)  # Remove USRP gains
+                    all_cirs.append(cir_tmp)
+                    all_pdps.append(pdp_tmp - const.GAIN_USRP_TX - const.GAIN_USRP_RX)  # Remove USRP gains
 
     # Convert to np arrays for easier computations
     all_1res_paths = np.array(all_1res_paths)
     all_paths = np.array(all_paths)
     all_cirs = np.array(all_cirs)
     all_pdps = np.array(all_pdps)
+    all_start_frame = np.array(all_start_frame)
     write_log("Finished all channel estimation computations")
 
-    return all_1res_paths, all_paths, all_cirs, all_pdps, start_frame, period
+    if all_1res_paths.size == 0:  # There wasn't any correlation between the tx and all rx
+        write_log("No correlation between the tx and all rx files")
+    write_log("Computed all estimation operations")
+
+    return all_1res_paths, all_paths, all_cirs, all_pdps, all_start_frame, period
 
 
 def create_results_dir():
@@ -197,7 +240,7 @@ def write_data(all_1res_paths):
     write_log("Written path data successfully in: " + path_csv_filename)
 
 
-def plot_data(all_1res_paths, all_paths, all_cirs, all_pdps, start_frame, period):
+def plot_data(all_1res_paths, all_paths, all_cirs, all_pdps, all_start_frame, period):
     """
     Print in the command line and write into a csv file information about path gains
     """
@@ -281,7 +324,7 @@ def plot_data(all_1res_paths, all_paths, all_cirs, all_pdps, start_frame, period
     write_log("Saved plots successfully in: " + const.PATH_RESULTS)
 
 
-def export_data(all_1res_paths, all_paths, all_cirs, all_pdps, start_frame, period):
+def export_data(all_1res_paths, all_paths, all_cirs, all_pdps, all_start_frame, period):
     """
     Export all raw data into csv files
     """
@@ -291,10 +334,11 @@ def export_data(all_1res_paths, all_paths, all_cirs, all_pdps, start_frame, peri
     np.savetxt(const.FILENAME_ALL_PATHS_RAW, all_paths, delimiter=",")
     np.savetxt(const.FILENAME_ALL_CIRS_RAW, all_cirs, delimiter=",")
     np.savetxt(const.FILENAME_ALL_PDPS_RAW, all_pdps, delimiter=",")
+    np.savetxt(const.FILENAME_ALL_START_FRAME_RAW, all_start_frame, delimiter=",")
 
-    # Write other dara into a csv
-    path_fields = ['Start frame', 'Period', 'Resolution save']  # Field names
-    path_data = [[start_frame, period, const.RES_SAVE]]         # Data
+    # Write other data into a csv
+    path_fields = ['Period', 'Resolution save']  # Field names
+    path_data = [[period, const.RES_SAVE]]       # Data
     path_csv_filename = const.FILENAME_VARIOUS_RAW
     with open(path_csv_filename, 'w') as csv_file:
         csvwriter = csv.writer(csv_file)                        # Creating a csv writer object
@@ -312,41 +356,33 @@ def main():
     # Load csv Tx data
     iq_tx = load_csv_trace(const.FILENAME_IQ_TX)
 
-    # Create rx filename
-    if sys.argv[1] == "0":  # Default rx file from bash interactive script
-        filename = const.FILENAME_IQ_RX_DEFAULT
+    # Create rx filenames
+    if sys.argv[1] == "0":  # Default rx files from bash interactive script
+        rx_files = build_rx_files(const.FILENAME_IQ_RX_DEFAULT)
     else:                   # Rx file from manual sounding
-        filename = const.FILENAME_IQ_RX
+        rx_files = build_rx_files(const.FILENAME_IQ_RX)
 
-    # All main operations
-    if os.path.isfile(filename):                            # Check if rx filename exists
-        iq_rx_usrp_data = load_gnuradio_trace(filename)     # Load rx data
-        all_1res_paths, all_paths, all_cirs, all_pdps, start_frame, period = \
-            compute_complete_estimate_start(iq_tx, iq_rx_usrp_data)
-        if all_1res_paths.size == 0:                        # There wasn't any correlation between the current tx-rx
-            write_log("No correlation between the current tx and rx")
-        write_log("Computed all estimation operations")
+    # All main estimate operations
+    all_1res_paths, all_paths, all_cirs, all_pdps, all_start_frame, period = \
+        compute_complete_estimate_start(iq_tx, rx_files)
 
-        # Create results directories
-        create_results_dir()
+    # Create results directories
+    create_results_dir()
 
-        # Print and write path gains information
-        if const.WRITE_FINAL:
-            write_data(all_1res_paths)
+    # Print and write path gains information
+    if const.WRITE_FINAL:
+        write_data(all_1res_paths)
 
-        # Plot and print final data
-        if const.PLOT_FINAL:
-            plot_data(all_1res_paths, all_paths, all_cirs, all_pdps, start_frame, period)
+    # Plot and print final data
+    if const.PLOT_FINAL:
+        plot_data(all_1res_paths, all_paths, all_cirs, all_pdps, all_start_frame, period)
 
-        # Plot and print final data
-        if const.EXPORT_DATA:
-            export_data(all_1res_paths, all_paths, all_cirs, all_pdps, start_frame, period)
+    # Plot and print final data
+    if const.EXPORT_DATA:
+        export_data(all_1res_paths, all_paths, all_cirs, all_pdps, all_start_frame, period)
 
-        # Rename results directory
-        rename_results_dir()
-
-    else:   # RX filename not found
-        write_log_error('', "RX filename not found")
+    # Rename results directory
+    rename_results_dir()
 
     write_log("Exiting start.py")
 
