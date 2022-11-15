@@ -112,7 +112,17 @@ done
 
 
 ## Print configuration values [TO-DO]
-
+echo '
+########## CONFIGURATION VALUES ##########
+SCENARIO ID: '"$SCENARIO_ID"'
+SCENARIO FREQUENCY: '"$SCENARIO_FREQ"' Hz
+SCENARIO NODES: '"$SCENARIO_NODES"'
+TX NODE ID: '"$TX_ID"'
+RX NODE ID: '"$RX_ID"'
+SOUNDING DURATION: '"$SOUNDING_DURATION"' seconds
+SOUNDING LINK: '"$SOUNDING_LINK"'
+##########################################
+'
 
 ## Export configuration values [TO-DO]
 

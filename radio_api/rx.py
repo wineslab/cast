@@ -54,7 +54,7 @@ class rx(gr.top_block):
         self.uhd_usrp_source_0.set_antenna('RX2', 0)
         self.uhd_usrp_source_0.set_samp_rate(samp_rate)
         self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec())
-        self.blocks_file_sink_0_0 = blocks.file_sink(gr.sizeof_gr_complex*1, '/root/results/row_data/file_sink_' + str(sys.argv[4]) + '.iq', False)
+        self.blocks_file_sink_0_0 = blocks.file_sink(gr.sizeof_gr_complex*1, '/root/results/raw_data/rx_file_sink_' + str(sys.argv[4]) + '.iq', False)
         self.blocks_file_sink_0_0.set_unbuffered(False)
 
         ##################################################

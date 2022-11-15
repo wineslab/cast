@@ -17,19 +17,19 @@ import csv
 from utils import *
 
 
-def build_rx_files(orig_rx_file):
+def build_rx_files():
     """
     Split the rx file if too big in smaller chunks not to go in overflow
     Return the list of files split to be processed
     """
 
     # Check if rx file exists
-    if not os.path.isfile(orig_rx_file):
-        write_log_error('', "Rx file not found")
+    if not os.path.isfile(const.FILENAME_IQ_RX_DEFAULT):
+        write_log_error('', "Rx file not found: " + const.FILENAME_IQ_RX_DEFAULT)
         return np.array([])
 
     # Split the file in smaller chunks with the unix split command
-    os.system("split -d -b 4G " + orig_rx_file + " " + const.FILENAME_IQ_RX_SPLIT +
+    os.system("split -d -b 4G " + const.FILENAME_IQ_RX_DEFAULT + " " + const.FILENAME_IQ_RX_SPLIT +
               " --additional-suffix=" + const.FILENAME_IQ_SUFFIX)
 
     # Retrieve list of rx split files created sorted by created time
@@ -40,7 +40,7 @@ def build_rx_files(orig_rx_file):
     return rx_files
 
 
-def get_rx_start_period(tx, rx, rxi):
+def get_rx_start_period(tx, rx, rxi, all_start_frame, all_rx_sizes):
     """
     Get start frame index and period of the receiving signal data
     If not the first run, retrieve the start from the previous one
@@ -48,6 +48,18 @@ def get_rx_start_period(tx, rx, rxi):
 
     # Get period of the signal from the tx length
     period = tx.size
+
+    # Retrieve start frame from previous one if possible
+    if rxi > 0 and all_start_frame[rxi-1] > -1:     # Valid previous start frame
+        exceed_rx = all_rx_sizes[rxi-1] - (math.floor(all_rx_sizes[rxi-1] / period) * period)   # Exceed of current rx
+        start_frame_tmp = all_start_frame[rxi-1]
+        while start_frame_tmp > period:                                     # Retrieve remaining values of the frame
+            start_frame_tmp = start_frame_tmp - period
+        start_frame = period - (exceed_rx - start_frame_tmp) + period*2     # Compute new start_frame
+
+        # Return start frame and period correctly computed from previous one
+        write_log("Computed start frame and period from previous correctly")
+        return start_frame, period
 
     # Get window and seek for start frame cycle point
     for i in range(const.CORR_RX_TRIALS):
@@ -138,8 +150,9 @@ def compute_complete_estimate_start(tx, rx_files):
     all_paths = []          # All pathlosses with resolution for current tx-rx transmission
     all_cirs = []           # All cirs with resolution for current tx-rx transmission
     all_pdps = []           # All pdps with resolution for current tx-rx transmission
-    all_start_frame = []    # All start of the rx frames
+    all_start_frame = []    # All start of the rx frame for each chunk
     period = -1             # Period of the tx
+    all_rx_sizes = []       # All rx sizes for each chunk
 
     for rxi in range(len(rx_files)):
 
@@ -147,9 +160,10 @@ def compute_complete_estimate_start(tx, rx_files):
 
         if os.path.isfile(filename):    # Check if rx filename exists
             rx = load_gnuradio_trace(filename)  # Load rx data
+            all_rx_sizes.append(rx.size)        # Store rx size
 
-            start_frame, period = get_rx_start_period(tx, rx, rxi)  # Get start_frame and period
-            all_start_frame.append(start_frame)                     # Store start_frame
+            start_frame, period = get_rx_start_period(tx, rx, rxi, all_start_frame, all_rx_sizes)   # Start_frame-period
+            all_start_frame.append(start_frame)                                                     # Store start_frame
 
             if start_frame == -1:  # No correlation between the current tx-rx
                 write_log("No correlation between the current tx and rx")
@@ -357,10 +371,7 @@ def main():
     iq_tx = load_csv_trace(const.FILENAME_IQ_TX)
 
     # Create rx filenames
-    if sys.argv[1] == "0":  # Default rx files from bash interactive script
-        rx_files = build_rx_files(const.FILENAME_IQ_RX_DEFAULT)
-    else:                   # Rx file from manual sounding
-        rx_files = build_rx_files(const.FILENAME_IQ_RX)
+    rx_files = build_rx_files()
 
     # All main estimate operations
     all_1res_paths, all_paths, all_cirs, all_pdps, all_start_frame, period = \
