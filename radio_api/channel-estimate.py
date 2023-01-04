@@ -219,8 +219,8 @@ def rename_results_dir():
     # Check if directory exists
     if os.path.exists(const.PATH_RESULTS) and sys.argv[1] == "0":
         unique_time = datetime.now().strftime('%Y_%m_%d-%H_%M')                                 # Get unique timestamp
-        results_name = const.PATH_RESULTS[:-1] + "_" + sys.argv[2] + "_" + sys.argv[3] + unique_time   # Build name
-        os.rename(const.PATH_RESULTS[:-1], results_name)                                               # Rename
+        results_name = const.PATH_RESULTS[:-1] + "_" + sys.argv[2] + "_" + sys.argv[3] + "_" + unique_time  # Build name
+        os.rename(const.PATH_RESULTS[:-1], results_name)                                                    # Rename
         write_log("Renamed results directory in " + results_name)
 
 
