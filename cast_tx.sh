@@ -3,7 +3,7 @@
 # (c) 2022 Northeastern University
 # Created by Davide Villa (villa.d@northeastern.edu)
 
-# run_tx_sounding.sh - This is the file that allows to run the CaST transmitter node to sound a scenario in Colosseum.
+# cast_tx.sh - This is the file that allows to run the CaST transmitter node to sound a scenario in Colosseum.
 # This file is ready-to-use and can be simply calling by running in the reservation node terminal that should
 # act as a transmitter node: ./run_tx_sounding.sh
 

@@ -3,11 +3,12 @@
 # (c) 2022 Northeastern University
 # Created by Davide Villa (villa.d@northeastern.edu)
 
-# cast_sounding.sh - This is the main file that allows to sound a scenario in Colosseum.
+# cast_rx.sh - This is the main file that allows to start the receiver and sound a scenario in Colosseum.
 # This file will guide the user on defining the required parameters to perform the sounding of CaST.
 # The default Rx node will be the current one where the script is executed.
 
-echo "Starting CaST sounding..."
+echo "Starting receiver CaST sounding..."
+
 
 ### Sounding parameters
 
@@ -111,7 +112,7 @@ done
 ## Get scenario offset [TO-DO]
 
 
-## Print configuration values [TO-DO]
+## Print configuration values
 echo '
 ########## CONFIGURATION VALUES ##########
 SCENARIO ID: '"$SCENARIO_ID"'

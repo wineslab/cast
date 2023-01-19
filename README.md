@@ -7,11 +7,15 @@ This work was partially supported by the U.S. National Science Foundation under 
 
 The channel sounding code of CaST has been adjusted to work on the Colosseum testbed. Colosseum users can make a reservation with the common image "cast" which already contains all latest code ready to run.
 
-To run CaST channel sounding, users can simply exploit the step-by-step interactive bash script that will guide them to input all needed configurations and requirements by executing:
+To run CaST channel sounding, users can simply leverage the step-by-step interactive bash script that will guide them to input all needed configurations and requirements by executing first on the tx node:
   ```
-  ./cast_sounding.sh
+  ./cast_tx.sh
   ```
-This script is supposed to be run in the intended receiver node. It is recommended the use of terminal multiplexers like `tmux` or `screen`.
+and then running the receiver node, which is going to perform also the cast post-processing operations, with:
+  ```
+  ./cast_rx.sh
+  ```
+It is recommended the use of terminal multiplexers like `tmux` or `screen`.
 
 # References
 
@@ -21,3 +25,5 @@ This script is supposed to be run in the intended receiver node. It is recommend
 [2] L. Bonati, P. Johari, M. Polese, S. D'Oro, S. Mohanti, M. Tehrani-Moayyed, D. Villa, S. Shrivastava, C. Tassie, K. Yoder, A. Bagga, P. Patel, V. Petkov, M. Seltser, F. Restuccia, A. Gosain, K.R. Chowdhury, S. Basagni, T. Melodia, "Colosseum: Large-Scale Wireless Experimentation Through Hardware-in-the-Loop Network Emulation," Proc. of IEEE Intl. Symp. on Dynamic Spectrum Access Networks (DySPAN), Virtual Conference, December 2021.
 
 [3] https://www.northeastern.edu/colosseum/
+
+[4] https://www.github.com/wineslab/cast/
