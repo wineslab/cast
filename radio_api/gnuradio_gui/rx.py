@@ -151,7 +151,7 @@ class rx(gr.top_block, Qt.QWidget):
         self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
             num_disp_points, #size
             firdes.WIN_BLACKMAN_hARRIS, #wintype
-            0, #fc
+            freq, #fc
             samp_rate, #bw
             "", #name
             1
@@ -249,7 +249,7 @@ class rx(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.qtgui_freq_sink_x_0.set_frequency_range(0, self.samp_rate)
+        self.qtgui_freq_sink_x_0.set_frequency_range(self.freq, self.samp_rate)
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
         self.uhd_usrp_source_0.set_samp_rate(self.samp_rate)
 
@@ -271,6 +271,7 @@ class rx(gr.top_block, Qt.QWidget):
 
     def set_freq(self, freq):
         self.freq = freq
+        self.qtgui_freq_sink_x_0.set_frequency_range(self.freq, self.samp_rate)
         self.uhd_usrp_source_0.set_center_freq(self.freq, 0)
 
 

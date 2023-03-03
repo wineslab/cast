@@ -107,25 +107,6 @@ blocks:
     coordinate: [544, 124.0]
     rotation: 0
     state: disabled
-- name: note_0
-  id: note
-  parameters:
-    alias: ''
-    comment: 'The CMA equalizer has been
-
-      replaced by a Linear Equalizer
-
-      and an Adaptive Algorithm for
-
-      version 3.9'
-    note: CMA equalizer replaced
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1408, 692.0]
-    rotation: 0
-    state: true
 - name: qtgui_const_sink_x_0
   id: qtgui_const_sink_x
   parameters:
@@ -249,7 +230,7 @@ blocks:
     color9: '"dark green"'
     comment: ''
     ctrlpanel: 'False'
-    fc: '0'
+    fc: freq
     fftsize: num_disp_points
     freqhalf: 'True'
     grid: 'False'
