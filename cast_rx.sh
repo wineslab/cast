@@ -59,7 +59,7 @@ printf 'The current node will be used as Rx: %d\n' "$RX_ID"
 
 ## Get Tx node id
 while true; do
-  read -p "What is the node ID of the reservation acting as the tx (e.g. 3)?: " -r
+  read -p "What is the SRN node ID of the reservation acting as the tx (e.g. 3)?: " -r
 
   if [[ $REPLY =~ ^([1-9][0-9]{0,2})$ ]]   # Tx node id valid
   then
@@ -67,7 +67,7 @@ while true; do
     break
   fi
 
-  echo 'Tx ID not valid. It must contain 3 digits (e.g. 12).'
+  echo 'Tx SRN ID not valid. It must contain 3 digits (e.g. 12).'
 done
 
 ## Ensure the tx node is running
@@ -97,7 +97,7 @@ done
 
 ## Get sounding link
 while true; do
-  read -p "What is the link tx-rx to sound (e.g. 1-2)?: " -r
+  read -p "What is the scenario link tx-rx to sound (e.g. 1-2)?: " -r
 
   if [[ $REPLY =~ ^([1-9]{1,2}-[0-9]{1,2})$ ]]   # Sounding link [1-2]
   then
@@ -183,7 +183,7 @@ colosseumcli rf start "$SCENARIO_ID" -c -m radio_api/radio_map.json
 
 ## Wait to sync for scenario time
 echo 'Waiting to sync.'
-sleep 11
+sleep 13
 
 
 ## Start rx
