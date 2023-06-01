@@ -183,7 +183,7 @@ colosseumcli rf start "$SCENARIO_ID" -c -m radio_api/radio_map.json
 
 ## Wait to sync for scenario time
 echo 'Waiting to sync.'
-sleep 13
+sleep 15
 
 
 ## Start rx
