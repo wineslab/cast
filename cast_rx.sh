@@ -88,11 +88,11 @@ while true; do
 
   if [[ $REPLY =~ ^([1-9][0-9]{0,2})$ ]]   # Sounding duration should be between [1-999]
   then
-    SOUNDING_DURATION=$(echo "$REPLY" | awk '{print $1 + 2}' )
+    SOUNDING_DURATION=$(echo "$REPLY" | awk '{print $1 + 0}' )
     break
   fi
 
-  echo 'Sounding duration not valid. It must be between [1-999] seconds. 2 seconds are added for conciseness.'
+  echo 'Sounding duration not valid. It must be between [1-999] seconds.'
 done
 
 ## Get sounding link
