@@ -30,8 +30,15 @@ done
 
 ## Flash fpga
 echo 'Flashing FPGA.'
-source /opt/fpga/usrp3/top/x300/setupenv.sh
-viv_jtag_program /usr/share/uhd/images/usrp_x310_fpga_HG.bit
+colosseumcli usrp flash -f usrp_x310_fpga_HG.bit || { echo 'FPGA flash failed.'; exit 1; }
+
+SECONDS=0  # Bash builtin timer
+until colosseumcli usrp info | grep -q "'status': 'IDLE'"; do
+    (( SECONDS > 120 )) && { echo 'FPGA flash failed.'; exit 1; }
+    sleep 1
+done
+
+echo 'FPGA flash completed.'
 
 
 ## Start tx
