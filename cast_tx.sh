@@ -30,7 +30,7 @@ done
 
 ## Flash fpga
 echo 'Flashing FPGA.'
-colosseumcli usrp flash -f usrp_x310_fpga_HG.bit || { echo 'FPGA flash failed.'; exit 1; }
+colosseumcli usrp flash -f usrp_x310_fpga_HG_c36.bit || { echo 'FPGA flash failed.'; exit 1; }
 
 SECONDS=0  # Bash builtin timer
 until colosseumcli usrp info | grep -q "'status': 'IDLE'"; do
